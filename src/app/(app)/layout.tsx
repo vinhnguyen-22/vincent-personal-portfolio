@@ -1,19 +1,19 @@
-import { DisableDraftButton } from "@/components/disable-draft-button";
-import Navbar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { cn, portableTextToPlainText } from "@/lib/utils";
-import { SanityLive } from "@/sanity/lib/live";
-import { getAuthorData } from "@/sanity/lib/queries";
-import type { Metadata } from "next";
-import { VisualEditing } from "next-sanity";
-import { Inter as FontSans } from "next/font/google";
-import { draftMode } from "next/headers";
-import "../globals.css";
+import { DisableDraftButton } from '@/components/disable-draft-button';
+import Navbar from '@/components/navbar';
+import { ThemeProvider } from '@/components/theme-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { cn, portableTextToPlainText } from '@/lib/utils';
+import { SanityLive } from '@/sanity/lib/live';
+import { getAuthorData } from '@/sanity/lib/queries';
+import type { Metadata } from 'next';
+import { VisualEditing } from 'next-sanity';
+import { Inter as FontSans } from 'next/font/google';
+import { draftMode } from 'next/headers';
+import '../globals.css';
 
 const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+  subsets: ['latin'],
+  variable: '--font-sans',
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,8 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (!author) {
     return {
-      title: "Portfolio",
-      description: "Personal portfolio website",
+      title: 'Portfolio',
+      description: 'Personal portfolio website',
     };
   }
 
@@ -31,17 +31,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(url),
     title: {
-      default: author.name ?? "",
+      default: author.name ?? '',
       template: `%s | ${author.name}`,
     },
     description: portableTextToPlainText(author.description!),
     openGraph: {
-      title: author.name ?? "",
+      title: author.name ?? '',
       description: portableTextToPlainText(author.description!),
       url: url,
-      siteName: author.name ?? "",
-      locale: "en_US",
-      type: "website",
+      siteName: author.name ?? '',
+      locale: 'en_US',
+      type: 'website',
     },
     robots: {
       index: true,
@@ -49,18 +49,18 @@ export async function generateMetadata(): Promise<Metadata> {
       googleBot: {
         index: true,
         follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
       },
     },
     twitter: {
-      title: author.name ?? "",
-      card: "summary_large_image",
+      title: author.name ?? '',
+      card: 'summary_large_image',
     },
     verification: {
-      google: "",
-      yandex: "",
+      google: '',
+      yandex: '',
     },
   };
 }
@@ -76,7 +76,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased max-w-2xl mx-auto py-12 sm:py-24 px-6",
+          'min-h-screen bg-background font-sans antialiased max-w-3xl mx-auto py-12 sm:py-24 px-6',
           fontSans.variable
         )}
       >

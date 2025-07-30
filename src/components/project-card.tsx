@@ -1,17 +1,17 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import { PortableText } from "@portabletext/react";
-import { TypedObject } from "sanity";
-import { Github, Globe } from "lucide-react";
+} from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { PortableText } from '@portabletext/react';
+import { Github, Globe } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { TypedObject } from 'sanity';
 
 interface Props {
   title: string;
@@ -45,15 +45,15 @@ export function ProjectCard({
   return (
     <Card
       className={
-        "flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full"
+        'flex flex-col overflow-hidden border hover:shadow-lg transition-all duration-300 ease-out h-full'
       }
     >
       <Link
-        href={href || "#"}
-        className={cn("block cursor-pointer", className)}
+        href={href || '#'}
+        className={cn('block cursor-pointer', className)}
       >
         <Image
-          src={image || ""}
+          src={image || ''}
           alt={title}
           width={500}
           height={300}
@@ -64,9 +64,9 @@ export function ProjectCard({
         <div className="space-y-1">
           <CardTitle className="mt-1 text-base">{title}</CardTitle>
           <div className="hidden font-sans text-xs underline print:visible">
-            {link?.replace("https://", "").replace("www.", "").replace("/", "")}
+            {link?.replace('https://', '').replace('www.', '').replace('/', '')}
           </div>
-          <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert">
+          <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert text-justify">
             <PortableText value={description} />
           </div>
         </div>
@@ -90,9 +90,9 @@ export function ProjectCard({
         {links && links.length > 0 && (
           <div className="flex flex-row flex-wrap items-start gap-1">
             {links?.map((link, idx) => (
-              <Link href={link?.url ?? ""} key={idx} target="_blank">
+              <Link href={link?.url ?? ''} key={idx} target="_blank">
                 <Badge key={idx} className="flex gap-2 px-2 py-1 text-[10px]">
-                  {link.type === "code" ? (
+                  {link.type === 'code' ? (
                     <Github className="size-3" />
                   ) : (
                     <Globe className="size-3" />

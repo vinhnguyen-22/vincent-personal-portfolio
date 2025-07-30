@@ -1,5 +1,5 @@
-import { defineQuery } from "next-sanity";
-import { sanityFetch } from "./live";
+import { defineQuery } from 'next-sanity';
+import { sanityFetch } from './live';
 
 export const getAuthorData = async () => {
   const AUTHOR_QUERY = defineQuery(`
@@ -15,7 +15,18 @@ export const getAuthorData = async () => {
       description,
       summary,
       location,
-      skills,
+      skills[] {
+        _key,
+        name,
+        icon {
+          asset-> {
+            url
+          }
+        },
+        category,
+        order
+      },
+
       social {
         github,
         linkedin,
