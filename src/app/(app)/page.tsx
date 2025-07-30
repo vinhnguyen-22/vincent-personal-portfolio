@@ -132,8 +132,8 @@ export default async function Page() {
               };
               const grouped: Record<string, typeof skills> = {};
               skills
-                .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
-                .forEach((skill) => {
+                .sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999))
+                .forEach((skill: any) => {
                   const cat = skill.category || 'Other';
                   if (!grouped[cat]) grouped[cat] = [];
                   grouped[cat].push(skill);
@@ -150,7 +150,7 @@ export default async function Page() {
                     {CATEGORY_LABELS[category] || category}
                   </h3>
                   <div className="flex flex-col gap-2 px-2 w-full">
-                    {skills.map((skill) => (
+                    {skills.map((skill: any) => (
                       <Badge
                         key={skill._key}
                         className="flex items-center gap-1 w-full justify-center bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 text-white
@@ -190,9 +190,8 @@ export default async function Page() {
                   Check out my latest work
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I&apos;ve worked on a variety of projects, from simple
-                  websites to complex web applications. Here are a few of my
-                  favorites.
+                  I&apos;ve worked on a variety of projects, from v websites to
+                  complex web applications. Here are a few of my favorites.
                 </p>
               </div>
             </div>
