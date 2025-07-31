@@ -47,14 +47,14 @@ const CATEGORY_BG: Record<string, string> = {
 
 const CATEGORY_HEIGHT = 0;
 const PLANET_MIN_SIZE = 40;
-const PLANET_MAX_SIZE = 60;
+const PLANET_MAX_SIZE = 50;
 
 // ====== FRAMER-MOTION random floating =====
 const getRandom = (min: number, max: number) =>
   Math.random() * (max - min) + min;
 function getRandomAnim() {
   return {
-    x: [100, getRandom(-8, 8), getRandom(-8, 8), 0],
+    x: [0, getRandom(-20, 20), getRandom(-8, 8), 0],
     y: [100, getRandom(20, 40), getRandom(0, 40), 0],
     transition: {
       duration: getRandom(7, 13),
