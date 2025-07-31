@@ -1,9 +1,9 @@
+import BoldSkillsUI, { SkillsData } from '@/components/block-skills';
 import BlurFade from '@/components/magicui/blur-fade';
 import BlurFadeText from '@/components/magicui/blur-fade-text';
 import { ProjectCard } from '@/components/project-card';
 import { ResumeCard } from '@/components/resume-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { portableTextToPlainText } from '@/lib/utils';
 import {
   getAuthorData,
@@ -12,7 +12,6 @@ import {
   getWorkExperience,
 } from '@/sanity/lib/queries';
 import { PortableText } from '@portabletext/react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const BLUR_FADE_DELAY = 0.04;
@@ -30,6 +29,23 @@ export default async function Page() {
 
   if (!author) return null;
 
+  // Tự động group kỹ năng thành object {category: [skills]}
+  const skillsData: SkillsData = author.skills.reduce(
+    (acc: any, skill: any) => {
+      const cat = skill.category || 'other';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push({
+        name: skill.name,
+        icon:
+          typeof skill.icon?.asset?.url === 'string'
+            ? skill.icon?.asset?.url
+            : '/', // hoặc xử lý icon là emoji, hoặc url
+        category: cat,
+      });
+      return acc;
+    },
+    {} as SkillsData
+  );
   return (
     <main className="flex flex-col min-h-[100dvh] space-y-10">
       <section id="hero">
@@ -120,62 +136,11 @@ export default async function Page() {
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
             <h2 className="text-2xl font-bold mb-4 tracking-tight">Skills</h2>
           </BlurFade>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(() => {
-              const skills = author.skills ?? [];
-              const CATEGORY_LABELS: Record<string, string> = {
-                programming: 'Programming',
-                data_engineering: 'Data Engineering',
-                ml: 'Machine Learning',
-                visualization: 'Visualization/BI',
-                deployment: 'Deployment/MLOps',
-              };
-              const grouped: Record<string, typeof skills> = {};
-              skills
-                .sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999))
-                .forEach((skill: any) => {
-                  const cat = skill.category || 'Other';
-                  if (!grouped[cat]) grouped[cat] = [];
-                  grouped[cat].push(skill);
-                });
-
-              return Object.entries(grouped).map(([category, skills], idx) => (
-                <div
-                  key={category}
-                  className="bg-gradient-to-br from-white/10 to-violet-700/10 shadow-2xl rounded-xl flex flex-col items-center min-h-[220px] p-8
-        transition-all duration-200 hover:scale-105 hover:shadow-purple-500/30 hover:bg-white/20
-        backdrop-blur-md"
-                >
-                  <h3 className="text-md font-extrabold mb-6 text-center text-violet-300 tracking-tight drop-shadow-sm">
-                    {CATEGORY_LABELS[category] || category}
-                  </h3>
-                  <div className="flex flex-col gap-2 px-2 w-full">
-                    {skills.map((skill: any) => (
-                      <Badge
-                        key={skill._key}
-                        className="flex items-center gap-1 w-full justify-center bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 text-white
-              rounded-lg px-1 py-2 font-semibold text-xs shadow-md hover:brightness-110 hover:shadow-lg
-              transition-all min-h-[20px] border-0"
-                      >
-                        {skill.icon?.asset?.url ? (
-                          <Image
-                            src={skill.icon.asset.url}
-                            alt={
-                              typeof skill.name === 'string' ? skill.name : ''
-                            }
-                            width={20}
-                            height={20}
-                            className="rounded"
-                          />
-                        ) : null}
-                        <span>{skill.name}</span>
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              ));
-            })()}
-          </div>
+          <BlurFade delay={BLUR_FADE_DELAY * 10}>
+            <div className="w-full min-h-[600px]">
+              <BoldSkillsUI skillsData={skillsData} />
+            </div>
+          </BlurFade>
         </div>
       </section>
       <section id="projects">
