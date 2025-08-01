@@ -12,6 +12,7 @@ import {
   getWorkExperience,
 } from '@/sanity/lib/queries';
 import { PortableText } from '@portabletext/react';
+import { DownloadIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const BLUR_FADE_DELAY = 0.04;
@@ -30,7 +31,7 @@ export default async function Page() {
   if (!author) return null;
 
   // Tự động group kỹ năng thành object {category: [skills]}
-  const skillsData: SkillsData = author.skills.reduce(
+  const skillsData: SkillsData = (author.skills ?? []).reduce(
     (acc: any, skill: any) => {
       const cat = skill.category || 'other';
       if (!acc[cat]) acc[cat] = [];
@@ -62,20 +63,46 @@ export default async function Page() {
                   className: 'text-[55px] ml-2.5 pb-2 -mt-1',
                 }}
               />
-              <BlurFadeText
-                className="max-w-[600px] md:text-xl"
-                delay={BLUR_FADE_DELAY}
-                text={portableTextToPlainText(author.description!)}
-              />
+
+              <BlurFade delay={BLUR_FADE_DELAY}>
+                <div className="relative max-w-[600px] ">
+                  <BlurFadeText
+                    className="md:text-xl"
+                    delay={BLUR_FADE_DELAY}
+                    text={portableTextToPlainText(author.description!)}
+                  />
+                  <div className="flex items-center justify-center"></div>
+                </div>
+              </BlurFade>
             </div>
             <BlurFade delay={BLUR_FADE_DELAY}>
-              <Avatar className="size-28 border">
-                <AvatarImage
-                  alt={author.name ?? ''}
-                  src={author.avatar?.asset?.url ?? ''}
-                />
-                <AvatarFallback>{author.initials}</AvatarFallback>
-              </Avatar>
+              <div className="flex items-center gap-3 flex-col">
+                <Avatar className="size-36 border relative">
+                  <AvatarImage
+                    alt={author.name ?? ''}
+                    src={author.avatar?.asset?.url ?? ''}
+                  />
+                  <AvatarFallback>{author.initials}</AvatarFallback>
+                </Avatar>
+                <a
+                  href={author.resume?.asset?.url ?? '#'}
+                  download
+                  className="
+    inline-flex items-center gap-2 px-3 py-1.5 rounded-lg
+    border border-gray-300 dark:border-gray-700
+    bg-white dark:bg-black
+    text-gray-800 dark:text-gray-100
+    font-normal text-sm shadow-sm
+    hover:bg-gray-100 dark:hover:bg-gray-800
+    hover:border-gray-400 dark:hover:border-gray-500
+    transition-colors duration-150
+    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
+  "
+                >
+                  Resume
+                  <DownloadIcon className="size-4 ml-0.5" />
+                </a>
+              </div>
             </BlurFade>
           </div>
         </div>
@@ -155,8 +182,9 @@ export default async function Page() {
                   Check out my latest work
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I&apos;ve worked on a variety of projects, from v websites to
-                  complex web applications. Here are a few of my favorites.
+                  I &apos;ve worked on a variety of data-driven projects, from
+                  interactive analytics dashboards to advanced machine learning
+                  platforms. Here are a few of my favorites.
                 </p>
               </div>
             </div>

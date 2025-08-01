@@ -18,6 +18,14 @@ export const authorType = defineType({
       type: 'string',
     },
     {
+      name: 'resume',
+      title: 'Resume (PDF)',
+      type: 'file',
+      options: {
+        accept: 'application/pdf',
+      },
+    },
+    {
       name: 'avatar',
       title: 'Avatar',
       type: 'image',

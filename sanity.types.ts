@@ -39,28 +39,6 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -221,6 +199,15 @@ export type Author = {
   _rev: string;
   name?: string;
   initials?: string;
+  resume?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    _type: "file";
+  };
   avatar?: {
     asset?: {
       _ref: string;
@@ -325,6 +312,28 @@ export type Author = {
   };
 };
 
+export type SanityFileAsset = {
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
+};
+
 export type BlockContent = Array<{
   children?: Array<{
     marks?: Array<string>;
@@ -413,11 +422,11 @@ export type SanityImageMetadata = {
   isOpaque?: boolean;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Slug | WorkExperience | Project | Education | Author | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | Geopoint | Slug | WorkExperience | Project | Education | Author | SanityFileAsset | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/queries.ts
 // Variable: AUTHOR_QUERY
-// Query: *[_type == "author"][0] {      _id,      name,      initials,      avatar {        asset-> {          url        }      },      description,      summary,      location,      skills,      social {        github,        linkedin,        twitter,        youtube,        email      }    }
+// Query: *[_type == "author"][0] {      _id,      name,      initials,      avatar {        asset-> {          url        }      },      description,      summary,      location,      resume {        asset-> {          url        }      },      skills[] {        _key,        name,        icon {          asset-> {            url          }        },        category,        order      },      social {        github,        linkedin,        twitter,        youtube,        email      }    }
 export type AUTHOR_QUERYResult = {
   _id: string;
   name: string | null;
@@ -488,22 +497,21 @@ export type AUTHOR_QUERYResult = {
     _key: string;
   }> | null;
   location: string | null;
+  resume: {
+    asset: {
+      url: string | null;
+    } | null;
+  } | null;
   skills: Array<{
-    name?: string;
-    icon?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    category?: "data_engineering" | "deployment" | "ml" | "programming" | "visualization";
-    order?: number;
     _key: string;
+    name: string | null;
+    icon: {
+      asset: {
+        url: string | null;
+      } | null;
+    } | null;
+    category: "data_engineering" | "deployment" | "ml" | "programming" | "visualization" | null;
+    order: number | null;
   }> | null;
   social: {
     github: string | null;
@@ -629,7 +637,7 @@ export type PROJECTS_QUERYResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"author\"][0] {\n      _id,\n      name,\n      initials,\n      avatar {\n        asset-> {\n          url\n        }\n      },\n      description,\n      summary,\n      location,\n      skills,\n      social {\n        github,\n        linkedin,\n        twitter,\n        youtube,\n        email\n      }\n    }\n  ": AUTHOR_QUERYResult;
+    "\n    *[_type == \"author\"][0] {\n      _id,\n      name,\n      initials,\n      avatar {\n        asset-> {\n          url\n        }\n      },\n      description,\n      summary,\n      location,\n      resume {\n        asset-> {\n          url\n        }\n      },\n      skills[] {\n        _key,\n        name,\n        icon {\n          asset-> {\n            url\n          }\n        },\n        category,\n        order\n      },\n\n      social {\n        github,\n        linkedin,\n        twitter,\n        youtube,\n        email\n      }\n    }\n  ": AUTHOR_QUERYResult;
     "\n    *[_type == \"workExperience\"] | order(startDate desc) {\n      _id,\n      company,\n      title,\n      logo {\n        asset-> {\n          url\n        }\n      },\n      location,\n      startDate,\n      endDate,\n      description,\n      url\n    }\n  ": WORK_QUERYResult;
     "\n    *[_type == \"education\"] | order(startDate desc) {\n      _id,\n      school,\n      degree,\n      logo {\n        asset-> {\n          url\n        }\n      },\n      startDate,\n      endDate,\n      url\n    }\n  ": EDUCATION_QUERYResult;
     "\n    *[_type == \"project\"] | order(startDate desc) {\n      _id,\n      title,\n      description,\n      startDate,\n      endDate,\n      technologies,\n      image {\n        asset-> {\n          url\n        }\n      },\n      video,\n      links[] {\n        title,\n        url,\n        type\n      }\n    }\n  ": PROJECTS_QUERYResult;

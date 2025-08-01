@@ -15,6 +15,11 @@ export const getAuthorData = async () => {
       description,
       summary,
       location,
+      resume {
+        asset-> {
+          url
+        }
+      },
       skills[] {
         _key,
         name,

@@ -1,62 +1,97 @@
-"use client";
+'use client';
 
-import { AnimatePresence, motion, useInView, Variants } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, Variants } from 'framer-motion';
+import { useRef } from 'react';
 
 interface BlurFadeProps {
   children: React.ReactNode;
   className?: string;
-  variant?: {
-    hidden: { y: number };
-    visible: { y: number };
-  };
+  /**
+   * Custom animation variants, override default (optional)
+   */
+  variant?: Variants;
+  /**
+   * Animation duration in seconds (default: 0.5)
+   */
   duration?: number;
+  /**
+   * Animation delay in seconds (default: 0)
+   */
   delay?: number;
+  /**
+   * Vertical offset for start (default: 16)
+   */
   yOffset?: number;
+  /**
+   * If true, only animate on scroll into view (default: true)
+   */
   inView?: boolean;
-  inViewMargin?: string;
+  /**
+   * Margin for inView detection (default: "-10%")
+   * Ex: "0px 0px -10% 0px"
+   */
+  rootMargin?: string;
+  /**
+   * CSS blur for initial state (default: "8px")
+   */
   blur?: string;
+  /**
+   * If true, will reset and animate again every time enter view (default: false)
+   */
+  triggerEveryTime?: boolean;
 }
+
 const BlurFade = ({
   children,
   className,
   variant,
-  duration = 0.4,
+  duration = 0.5,
   delay = 0,
-  yOffset = 6,
-  inView = false,
-  inViewMargin = "-50px",
-  blur = "6px",
+  yOffset = 16,
+  inView = true,
+  rootMargin = '0px 0px -10% 0px',
+  blur = '8px',
+  triggerEveryTime = false,
 }: BlurFadeProps) => {
   const ref = useRef(null);
-  const inViewResult = useInView(ref, {
-    once: true,
-    margin: inViewMargin as `${number}px`,
+  // Nếu muốn luôn animate mỗi lần scroll lại, set once: false
+  const isInView = useInView(ref, {
+    once: !triggerEveryTime,
+    amount: 0.15, // hoặc "some" hoặc "all"
   });
-  const isInView = !inView || inViewResult;
+
+  // Nếu không dùng inView, luôn visible
+  const show = inView ? isInView : true;
+
   const defaultVariants: Variants = {
-    hidden: { y: yOffset, opacity: 0, filter: `blur(${blur})` },
-    visible: { y: -yOffset, opacity: 1, filter: `blur(0px)` },
+    hidden: {
+      opacity: 0,
+      y: yOffset,
+      filter: `blur(${blur})`,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+    },
   };
-  const combinedVariants = variant || defaultVariants;
+
   return (
-    <AnimatePresence>
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        exit="hidden"
-        variants={combinedVariants}
-        transition={{
-          delay: 0.04 + delay,
-          duration,
-          ease: "easeOut",
-        }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={show ? 'visible' : 'hidden'}
+      variants={variant || defaultVariants}
+      transition={{
+        duration,
+        delay,
+        ease: 'easeOut',
+      }}
+      className={className}
+      style={{ willChange: 'opacity, transform, filter' }}
+    >
+      {children}
+    </motion.div>
   );
 };
 
