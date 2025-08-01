@@ -1,23 +1,24 @@
-import { Dock, DockIcon } from "@/components/magicui/dock";
-import { ModeToggle } from "@/components/mode-toggle";
-import { buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Dock, DockIcon } from '@/components/magicui/dock';
+import { ModeToggle } from '@/components/mode-toggle';
+import { buttonVariants } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { getAuthorData } from "@/sanity/lib/queries";
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { getAuthorData } from '@/sanity/lib/queries';
 import {
+  DraftingCompassIcon,
   GithubIcon,
   HomeIcon,
   LinkedinIcon,
   MailIcon,
-  TwitterIcon,
+  PackageOpenIcon,
   YoutubeIcon,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default async function Navbar() {
   const author = await getAuthorData();
@@ -27,12 +28,9 @@ export default async function Navbar() {
       <div className="fixed bottom-0 inset-x-0 h-16 w-full bg-background to-transparent backdrop-blur-lg [-webkit-mask-image:linear-gradient(to_top,black,transparent)] dark:bg-background"></div>
       <Dock className="z-50 pointer-events-auto relative mx-auto flex min-h-full h-full items-center px-1 bg-background [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] ">
         {[
-          { href: "/", icon: HomeIcon, label: "Home" },
-          {
-            href: `mailto:${author?.social?.email || ""}`,
-            icon: MailIcon,
-            label: "Contact",
-          },
+          { href: '/', icon: HomeIcon, label: 'Home' },
+          { href: '#skills', icon: DraftingCompassIcon, label: 'Skills' },
+          { href: '#projects', icon: PackageOpenIcon, label: 'Projects' },
         ].map((item) => (
           <DockIcon key={item.href}>
             <Tooltip>
@@ -40,8 +38,8 @@ export default async function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    buttonVariants({ variant: "ghost", size: "icon" }),
-                    "size-12"
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
+                    'size-12'
                   )}
                 >
                   <item.icon className="size-4" />
@@ -53,27 +51,28 @@ export default async function Navbar() {
             </Tooltip>
           </DockIcon>
         ))}
+
         <Separator orientation="vertical" className="h-full" />
         {[
           {
-            name: "Twitter",
-            icon: TwitterIcon,
-            url: author?.social?.twitter || "#",
+            url: `mailto:${author?.social?.email || ''}`,
+            icon: MailIcon,
+            name: 'Contact',
           },
           {
-            name: "GitHub",
+            name: 'GitHub',
             icon: GithubIcon,
-            url: author?.social?.github || "#",
+            url: author?.social?.github || '#',
           },
           {
-            name: "LinkedIn",
+            name: 'LinkedIn',
             icon: LinkedinIcon,
-            url: author?.social?.linkedin || "#",
+            url: author?.social?.linkedin || '#',
           },
           {
-            name: "YouTube",
+            name: 'YouTube',
             icon: YoutubeIcon,
-            url: author?.social?.youtube || "#",
+            url: author?.social?.youtube || '#',
           },
         ].map((social) => (
           <DockIcon key={social.name}>
@@ -82,8 +81,8 @@ export default async function Navbar() {
                 <Link
                   href={social.url}
                   className={cn(
-                    buttonVariants({ variant: "ghost", size: "icon" }),
-                    "size-12"
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
+                    'size-12'
                   )}
                 >
                   <social.icon className="size-4" />

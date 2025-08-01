@@ -35,14 +35,15 @@ const CATEGORY_LIST = [
 
 const CATEGORY_BG: Record<string, string> = {
   programming:
-    'bg-gradient-to-l from-blue-900/10 via-indigo-900/10 to-transparent',
-  ml: 'bg-gradient-to-r  from-teal-900/10 via-green-900/10 to-transparent',
+    'bg-gradient-to-l from-transparent md:from-blue-900/10 via-indigo-900/10 to-transparent',
+  ml: 'bg-gradient-to-r  from-transparent md:from-teal-900/10 via-green-900/10 to-transparent',
   data_engineering:
-    'bg-gradient-to-l from-orange-900/10 via-yellow-900/10 to-transparent',
+    'bg-gradient-to-l from-transparent md:from-orange-900/10 via-yellow-900/10 to-transparent',
   visualization:
-    'bg-gradient-to-r from-pink-900/10  via-purple-900/10 to-transparent',
-  deployment: 'bg-gradient-to-l from-cyan-900/10 via-sky-900/10 to-transparent',
-  other: 'bg-gradient-to-r from-gray-900/10 to-transparent',
+    'bg-gradient-to-r from-transparent md:from-pink-900/10  via-purple-900/10 to-transparent',
+  deployment:
+    'bg-gradient-to-l from-transparent md:from-cyan-900/10 via-sky-900/10 to-transparent',
+  other: 'bg-gradient-to-r from-transparent md:from-gray-900/10 to-transparent',
 };
 
 const CATEGORY_HEIGHT = 0;
@@ -128,13 +129,13 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
         ))}
       </div>
       {/* Big title */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 select-none">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 select-none md:block hidden">
         <h1 className="text-[140px] md:text-[170px] font-black text-white/5 tracking-wider">
           VINCENT
         </h1>
       </div>
       {/* Canvas group */}
-      <div className="relative grid grid-cols-2 gap-y-0 pt-8 pb-2">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-y-0 ">
         {CATEGORY_LIST.map((cat, catIdx) => {
           const group = skillsData[cat] ?? [];
           if (!group.length) return null;
@@ -143,7 +144,7 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
               key={cat}
               className={`relative w-full mx-auto min-h-[300px] mb-0  ${CATEGORY_BG[cat]} py-8 `}
             >
-              <div className=" text-center text-base md:text-lg font-bold tracking-[0.2em] text-violet-200 uppercase drop-shadow-lg select-none z-10">
+              <div className=" text-center text-base md:text-lg font-bold tracking-[0.2em] text-black  dark:text-violet-200 uppercase drop-shadow-lg select-none z-10">
                 {CATEGORY_LABELS[cat]}
               </div>
               <div
@@ -207,7 +208,7 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
                         </div>
                       </div>
                       {/* Label */}
-                      <span className="mt-2 py-1 text-xs font-medium rounded-lg bg-black/35 text-white/90 shadow-sm select-none">
+                      <span className="mt-2 text-center px-2 py-1 text-xs font-medium rounded-lg bg-black/35 text-white/90 shadow-sm select-none">
                         {skill.name}
                       </span>
                     </motion.div>
