@@ -272,7 +272,7 @@ const ResumeTimeline = ({ works }: { works: any[] }) => {
       {/* Dynamic background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className="hidden md:block absolute top-10 left-10 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"
+          className="hidden md:block absolute top-10 left-24 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"
           style={{ transform: `translateY(${scrollY * 0.1}px)` }}
         />
         <div

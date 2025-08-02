@@ -5,6 +5,7 @@ import { ProjectCard } from '@/components/project-card';
 import { ResumeCard } from '@/components/resume-card';
 import ResumeTimeline from '@/components/resume-timeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import VideoBackground from '@/components/video-background';
 import { portableTextToPlainText } from '@/lib/utils';
 import {
   getAuthorData,
@@ -49,18 +50,7 @@ export default async function Page() {
   }, {} as SkillsData);
   return (
     <main className="min-h-[100dvh] space-y-10 relative w-full h-full">
-      <video
-        className="w-full h-full fixed -z-10 right-0 top-0 mix-blend-overlay object-cover overflow-clip"
-        autoPlay
-        loop
-        muted
-        playsInline
-        src="/videos/galaxy.mp4"
-        style={{
-          overflowClipMargin: 'content-box',
-        }}
-      />
-
+      <VideoBackground />
       <section id="hero">
         <div className="mx-auto w-full space-y-8">
           <div className="gap-2 flex justify-between">
@@ -129,7 +119,6 @@ export default async function Page() {
           </div>
         </BlurFade>
       </section>
-
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -158,7 +147,6 @@ export default async function Page() {
         </BlurFade>
         <ResumeTimeline works={work} />
       </section>
-
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-8">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
