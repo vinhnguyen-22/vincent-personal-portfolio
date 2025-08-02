@@ -3,12 +3,14 @@ import BlurFade from '@/components/magicui/blur-fade';
 import BlurFadeText from '@/components/magicui/blur-fade-text';
 import { ProjectCard } from '@/components/project-card';
 import { ResumeCard } from '@/components/resume-card';
+import ResumeTimeline from '@/components/resume-timeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { portableTextToPlainText } from '@/lib/utils';
 import {
   getAuthorData,
   getEducation,
   getProjects,
+  getSkills,
   getWorkExperience,
 } from '@/sanity/lib/queries';
 import { PortableText } from '@portabletext/react';
@@ -21,34 +23,44 @@ export const dynamic = 'force-static';
 export const revalidate = 604800; // 1 week
 
 export default async function Page() {
-  const [author, work, education, projects] = await Promise.all([
+  const [author, work, education, projects, skills] = await Promise.all([
     getAuthorData(),
     getWorkExperience(),
     getEducation(),
     getProjects(),
+    getSkills(),
   ]);
 
   if (!author) return null;
 
   // Tự động group kỹ năng thành object {category: [skills]}
-  const skillsData: SkillsData = (author.skills ?? []).reduce(
-    (acc: any, skill: any) => {
-      const cat = skill.category || 'other';
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push({
-        name: skill.name,
-        icon:
-          typeof skill.icon?.asset?.url === 'string'
-            ? skill.icon?.asset?.url
-            : '/', // hoặc xử lý icon là emoji, hoặc url
-        category: cat,
-      });
-      return acc;
-    },
-    {} as SkillsData
-  );
+  const skillsData: SkillsData = skills.reduce((acc: any, skill: any) => {
+    const cat = skill.category || 'other';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push({
+      name: skill.name,
+      icon:
+        typeof skill.icon?.asset?.url === 'string'
+          ? skill.icon?.asset?.url
+          : '/', // hoặc xử lý icon là emoji, hoặc url
+      category: cat,
+    });
+    return acc;
+  }, {} as SkillsData);
   return (
-    <main className="flex flex-col min-h-[100dvh] space-y-10">
+    <main className="min-h-[100dvh] space-y-10 relative w-full h-full">
+      <video
+        className="w-full h-full fixed -z-10 right-0 top-0 mix-blend-overlay object-cover overflow-clip"
+        autoPlay
+        loop
+        muted
+        playsInline
+        src="/videos/galaxy.mp4"
+        style={{
+          overflowClipMargin: 'content-box',
+        }}
+      />
+
       <section id="hero">
         <div className="mx-auto w-full space-y-8">
           <div className="gap-2 flex justify-between">
@@ -117,27 +129,7 @@ export default async function Page() {
           </div>
         </BlurFade>
       </section>
-      <section id="work">
-        <div className="flex min-h-0 flex-col gap-y-3">
-          <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <h2 className="text-xl font-bold">Work Experience</h2>
-          </BlurFade>
-          {work.map((item, id) => (
-            <BlurFade key={item._id} delay={BLUR_FADE_DELAY * 6 + id * 0.05}>
-              <ResumeCard
-                key={item._id}
-                logoUrl={item.logo?.asset?.url ?? ''}
-                altText={item.company ?? ''}
-                title={item.company ?? ''}
-                subtitle={item.title ?? ''}
-                href={item.url ?? ''}
-                period={`${item.startDate} - ${item.endDate ?? 'Present'}`}
-                description={item.description ?? []}
-              />
-            </BlurFade>
-          ))}
-        </div>
-      </section>
+
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
@@ -158,6 +150,15 @@ export default async function Page() {
           ))}
         </div>
       </section>
+      <section id="work">
+        <BlurFade delay={BLUR_FADE_DELAY * 9}>
+          <h2 className="text-2xl font-bold mb-4 tracking-tight">
+            Experiences
+          </h2>
+        </BlurFade>
+        <ResumeTimeline works={work} />
+      </section>
+
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-8">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>

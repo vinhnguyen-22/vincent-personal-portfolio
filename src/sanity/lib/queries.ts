@@ -20,18 +20,6 @@ export const getAuthorData = async () => {
           url
         }
       },
-      skills[] {
-        _key,
-        name,
-        icon {
-          asset-> {
-            url
-          }
-        },
-        category,
-        order
-      },
-
       social {
         github,
         linkedin,
@@ -60,11 +48,23 @@ export const getWorkExperience = async () => {
           url
         }
       },
+      skills[]->{
+        name,
+        category
+      },
       location,
       startDate,
       endDate,
       description,
-      url
+      url,
+      achievements[]{
+        name,
+        icon{
+          asset-> {
+            url
+          }
+        },
+      },
     }
   `);
 
@@ -121,10 +121,30 @@ export const getProjects = async () => {
       }
     }
   `);
-
   const projects = await sanityFetch({
     query: PROJECTS_QUERY,
   });
 
   return projects.data ?? [];
+};
+
+export const getSkills = async () => {
+  const Skills_QUERY = defineQuery(`
+    *[_type == "skill"] {
+      _id,
+      name,
+      icon{
+        asset-> {
+          url
+        }
+      },
+      category,
+      order
+      }
+  `);
+  const skills = await sanityFetch({
+    query: Skills_QUERY,
+  });
+
+  return skills.data ?? [];
 };

@@ -107,7 +107,7 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
   // ===== RENDER =====
   return (
     <section
-      className="relative w-full max-w-[1020px] mx-auto px-2"
+      className=" w-full  mx-auto px-2"
       style={{ minHeight: CATEGORY_HEIGHT * CATEGORY_LIST.length + 70 }}
     >
       {/* Star background */}
@@ -115,7 +115,7 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
         {stars.map((star, i) => (
           <div
             key={i}
-            className="absolute rounded-full bg-white/80 blur-[2px]"
+            className="absolute rounded-full"
             style={{
               left: `${star.left}%`,
               top: `${star.top}%`,
@@ -175,7 +175,7 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
                     >
                       <div
                         className={`
-                        rounded-full bg-white/10 shadow-lg transition-all duration-300 group-hover:scale-150 border border-white/10 relative hover:shadow-2xl
+                        rounded-full dark:bg-white/10 shadow-black shadow-lg transition-all duration-300 group-hover:scale-150 border border-white/10 relative hover:shadow-2xl
                         opacity-85 p-2
                         `}
                         style={{

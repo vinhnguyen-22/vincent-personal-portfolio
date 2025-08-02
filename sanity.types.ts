@@ -72,6 +72,28 @@ export type WorkExperience = {
     _type: "image";
   };
   location?: string;
+  skills?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "skill";
+  }>;
+  achievements?: Array<{
+    name?: string;
+    icon?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    _key: string;
+  }>;
   startDate?: string;
   endDate?: string;
   description?: Array<{
@@ -105,6 +127,28 @@ export type WorkExperience = {
     _key: string;
   }>;
   url?: string;
+};
+
+export type Skill = {
+  _id: string;
+  _type: "skill";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  icon?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  category?: "programming" | "data_engineering" | "ml" | "visualization" | "deployment";
+  order?: number;
 };
 
 export type Project = {
@@ -280,29 +324,6 @@ export type Author = {
     _key: string;
   }>;
   location?: string;
-  skills?: Array<{
-    name?: string;
-    icon?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    category?: "programming" | "data_engineering" | "ml" | "visualization" | "deployment";
-    order?: number;
-    _key: string;
-  }>;
-  tools?: Array<{
-    name?: string;
-    category?: string;
-    icon?: string;
-    _key: string;
-  }>;
   social?: {
     github?: string;
     linkedin?: string;
@@ -422,7 +443,7 @@ export type SanityImageMetadata = {
   isOpaque?: boolean;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | Geopoint | Slug | WorkExperience | Project | Education | Author | SanityFileAsset | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | Geopoint | Slug | WorkExperience | Skill | Project | Education | Author | SanityFileAsset | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/queries.ts
 // Variable: AUTHOR_QUERY
@@ -502,17 +523,7 @@ export type AUTHOR_QUERYResult = {
       url: string | null;
     } | null;
   } | null;
-  skills: Array<{
-    _key: string;
-    name: string | null;
-    icon: {
-      asset: {
-        url: string | null;
-      } | null;
-    } | null;
-    category: "data_engineering" | "deployment" | "ml" | "programming" | "visualization" | null;
-    order: number | null;
-  }> | null;
+  skills: null;
   social: {
     github: string | null;
     linkedin: string | null;
@@ -522,7 +533,7 @@ export type AUTHOR_QUERYResult = {
   } | null;
 } | null;
 // Variable: WORK_QUERY
-// Query: *[_type == "workExperience"] | order(startDate desc) {      _id,      company,      title,      logo {        asset-> {          url        }      },      location,      startDate,      endDate,      description,      url    }
+// Query: *[_type == "workExperience"] | order(startDate desc) {      _id,      company,      title,      logo {        asset-> {          url        }      },      skills[]->{        name,        category      },      location,      startDate,      endDate,      description,      url    }
 export type WORK_QUERYResult = Array<{
   _id: string;
   company: string | null;
@@ -532,6 +543,10 @@ export type WORK_QUERYResult = Array<{
       url: string | null;
     } | null;
   } | null;
+  skills: Array<{
+    name: string | null;
+    category: "data_engineering" | "deployment" | "ml" | "programming" | "visualization" | null;
+  }> | null;
   location: string | null;
   startDate: string | null;
   endDate: string | null;
@@ -632,14 +647,27 @@ export type PROJECTS_QUERYResult = Array<{
     type: string | null;
   }> | null;
 }>;
+// Variable: Skills_QUERY
+// Query: *[_type == "skill"] {      _id,      name,      icon{        asset-> {          url        }      },      category      }
+export type Skills_QUERYResult = Array<{
+  _id: string;
+  name: string | null;
+  icon: {
+    asset: {
+      url: string | null;
+    } | null;
+  } | null;
+  category: "data_engineering" | "deployment" | "ml" | "programming" | "visualization" | null;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == \"author\"][0] {\n      _id,\n      name,\n      initials,\n      avatar {\n        asset-> {\n          url\n        }\n      },\n      description,\n      summary,\n      location,\n      resume {\n        asset-> {\n          url\n        }\n      },\n      skills[] {\n        _key,\n        name,\n        icon {\n          asset-> {\n            url\n          }\n        },\n        category,\n        order\n      },\n\n      social {\n        github,\n        linkedin,\n        twitter,\n        youtube,\n        email\n      }\n    }\n  ": AUTHOR_QUERYResult;
-    "\n    *[_type == \"workExperience\"] | order(startDate desc) {\n      _id,\n      company,\n      title,\n      logo {\n        asset-> {\n          url\n        }\n      },\n      location,\n      startDate,\n      endDate,\n      description,\n      url\n    }\n  ": WORK_QUERYResult;
+    "\n    *[_type == \"workExperience\"] | order(startDate desc) {\n      _id,\n      company,\n      title,\n      logo {\n        asset-> {\n          url\n        }\n      },\n      skills[]->{\n        name,\n        category\n      },\n      location,\n      startDate,\n      endDate,\n      description,\n      url\n    }\n  ": WORK_QUERYResult;
     "\n    *[_type == \"education\"] | order(startDate desc) {\n      _id,\n      school,\n      degree,\n      logo {\n        asset-> {\n          url\n        }\n      },\n      startDate,\n      endDate,\n      url\n    }\n  ": EDUCATION_QUERYResult;
     "\n    *[_type == \"project\"] | order(startDate desc) {\n      _id,\n      title,\n      description,\n      startDate,\n      endDate,\n      technologies,\n      image {\n        asset-> {\n          url\n        }\n      },\n      video,\n      links[] {\n        title,\n        url,\n        type\n      }\n    }\n  ": PROJECTS_QUERYResult;
+    "\n    *[_type == \"skill\"] {\n      _id,\n      name,\n      icon{\n        asset-> {\n          url\n        }\n      },\n      category\n      }\n  ": Skills_QUERYResult;
   }
 }
