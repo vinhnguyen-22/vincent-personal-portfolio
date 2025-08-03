@@ -99,7 +99,7 @@ const AchievementBadge = ({
         alt={achievement.name}
         width={18}
         height={18}
-        className="rounded-full bg-emerald-700  dark:bg-emerald-20 object-contain"
+        className="rounded-full bg-emerald-200 object-contain"
       />
     )}
     <span className="text-xs font-medium">{achievement?.name}</span>
@@ -253,10 +253,6 @@ const ResumeCard: React.FC<ResumeCardProps> = ({ item, id, isActive }) => {
   );
 };
 
-function formatPeriod(period: string) {
-  return period.replace(/-/g, '–').replace(/\s+/g, ' ');
-}
-
 const ResumeTimeline = ({ works }: { works: any[] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
@@ -310,16 +306,22 @@ const ResumeTimeline = ({ works }: { works: any[] }) => {
                   {/* Timeline date */}
                   <div className="w-full md:w-32 flex-shrink-0 md:text-right mb-1 md:mb-0">
                     <div className="sticky top-4 md:top-8 space-y-1 md:space-y-2">
-                      <div className="text-sm md:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                        {formatPeriod(
-                          `${item.startDate} - ${item.endDate ?? 'Present'}`
-                        )}
+                      <div className="text-sm md:text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                        {new Date(item.startDate).toLocaleString('en-US', {
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                        <br />
+                        {new Date(item.endDate).toLocaleString('en-US', {
+                          month: 'long',
+                          year: 'numeric',
+                        })}
                       </div>
                       <div className="w-14 h-px bg-gradient-to-r from-transparent to-blue-300 ml-0 md:ml-auto" />
                     </div>
                   </div>
                   {/* Timeline dot */}
-                  <div className="hidden md:block flex items-center justify-center md:block mb-2 md:mb-0">
+                  <div className="hidden md:flex items-center justify-center  mb-2 md:mb-0">
                     <TimelineDot
                       isActive={activeIndex === id}
                       delay={id * 100}

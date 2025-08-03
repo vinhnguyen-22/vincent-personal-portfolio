@@ -1,11 +1,10 @@
 import BoldSkillsUI, { SkillsData } from '@/components/block-skills';
 import BlurFade from '@/components/magicui/blur-fade';
 import BlurFadeText from '@/components/magicui/blur-fade-text';
-import { ProjectCard } from '@/components/project-card';
+import { ProjectDetailDialog } from '@/components/project-detail';
 import { ResumeCard } from '@/components/resume-card';
 import ResumeTimeline from '@/components/resume-timeline';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import VideoBackground from '@/components/video-background';
 import { portableTextToPlainText } from '@/lib/utils';
 import {
   getAuthorData,
@@ -17,7 +16,6 @@ import {
 import { PortableText } from '@portabletext/react';
 import { DownloadIcon } from 'lucide-react';
 import Link from 'next/link';
-
 const BLUR_FADE_DELAY = 0.04;
 
 export const dynamic = 'force-static';
@@ -49,8 +47,7 @@ export default async function Page() {
     return acc;
   }, {} as SkillsData);
   return (
-    <main className="min-h-[100dvh] space-y-10 relative w-full h-full">
-      <VideoBackground />
+    <main className="min-h-[100dvh] space-y-10 relative w-full h-full antialiased max-w-5xl mx-auto">
       <section id="hero">
         <div className="mx-auto w-full space-y-8">
           <div className="gap-2 flex justify-between">
@@ -77,6 +74,7 @@ export default async function Page() {
                 </div>
               </BlurFade>
             </div>
+
             <BlurFade delay={BLUR_FADE_DELAY}>
               <div className="flex items-center gap-3 flex-col">
                 <Avatar className="size-36 border relative">
@@ -89,6 +87,7 @@ export default async function Page() {
                 <a
                   href={author.resume?.asset?.url ?? '#'}
                   download
+                  target="_blank"
                   className="
     inline-flex items-center gap-2 px-3 py-1.5 rounded-lg
     border border-gray-300 dark:border-gray-700
@@ -109,6 +108,7 @@ export default async function Page() {
           </div>
         </div>
       </section>
+
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold">About</h2>
@@ -124,7 +124,7 @@ export default async function Page() {
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
             <h2 className="text-xl font-bold">Education</h2>
           </BlurFade>
-          {education.map((item, id) => (
+          {education.map((item: any, id: any) => (
             <BlurFade key={item._id} delay={BLUR_FADE_DELAY * 8 + id * 0.05}>
               <ResumeCard
                 key={item._id}
@@ -171,29 +171,20 @@ export default async function Page() {
                   Check out my latest work
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I &apos;ve worked on a variety of data-driven projects, from
+                  I have worked on a variety of data-driven projects, from
                   interactive analytics dashboards to advanced machine learning
                   platforms. Here are a few of my favorites.
                 </p>
               </div>
             </div>
           </BlurFade>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-[800px] mx-auto">
-            {projects.map((project, id) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3  gap-6">
+            {projects.map((project: any, id: any) => (
               <BlurFade
                 key={project._id}
                 delay={BLUR_FADE_DELAY * 12 + id * 0.05}
               >
-                <ProjectCard
-                  key={project._id}
-                  title={project.title ?? ''}
-                  description={project.description ?? []}
-                  tags={project.technologies ?? []}
-                  image={project.image?.asset?.url ?? ''}
-                  video={project.video ?? ''}
-                  links={project.links ?? []}
-                  href={project.links?.[0]?.url ?? ''}
-                />
+                <ProjectDetailDialog key={project._id} project={project} />
               </BlurFade>
             ))}
           </div>
@@ -223,19 +214,6 @@ export default async function Page() {
           </BlurFade>
         </div>
       </section>
-      <footer className="pb-12 sm:pb-6 text-center text-xs text-muted-foreground">
-        <p>
-          Built with Next.js and Sanity.{' '}
-          <Link
-            href="https://github.com/vinhnguyen-22/vincent-personal-portfolio"
-            className="text-blue-500 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View source on GitHub
-          </Link>
-        </p>
-      </footer>
     </main>
   );
 }

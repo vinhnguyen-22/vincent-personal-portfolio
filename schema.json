@@ -1262,10 +1262,98 @@
         },
         "optional": true
       },
-      "video": {
+      "role": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "responsibilities": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
+        },
+        "optional": true
+      },
+      "outcome": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "teamSize": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "projectType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "personal"
+            },
+            {
+              "type": "string",
+              "value": "company"
+            },
+            {
+              "type": "string",
+              "value": "freelance"
+            },
+            {
+              "type": "string",
+              "value": "academic"
+            },
+            {
+              "type": "string",
+              "value": "open_source"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "status": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "completed"
+            },
+            {
+              "type": "string",
+              "value": "ongoing"
+            },
+            {
+              "type": "string",
+              "value": "paused"
+            },
+            {
+              "type": "string",
+              "value": "abandoned"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "tags": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
         },
         "optional": true
       },

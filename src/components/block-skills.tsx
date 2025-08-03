@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 // ===== TYPE =====
 export type SkillBlock = {
@@ -21,7 +22,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   data_engineering: 'Data Engineering',
   visualization: 'Visualization / BI',
   deployment: 'Deployment / MLOps',
-  other: 'Other',
+  other: 'Other Tools',
 };
 
 const CATEGORY_LIST = [
@@ -46,7 +47,7 @@ const CATEGORY_BG: Record<string, string> = {
   other: 'bg-gradient-to-r from-transparent md:from-gray-900/10 to-transparent',
 };
 
-const CATEGORY_HEIGHT = 0;
+const ITEMS_PER_ROW = 4;
 const PLANET_MIN_SIZE = 40;
 const PLANET_MAX_SIZE = 50;
 
@@ -56,7 +57,7 @@ const getRandom = (min: number, max: number) =>
 function getRandomAnim() {
   return {
     x: [0, getRandom(-20, 20), getRandom(-8, 8), 0],
-    y: [100, getRandom(20, 40), getRandom(0, 40), 0],
+    y: [0, getRandom(20, 40), getRandom(0, 40), 0],
     transition: {
       duration: getRandom(7, 13),
       repeat: Infinity,
@@ -69,65 +70,52 @@ function getRandomAnim() {
 
 // ===== COMPONENT =====
 const BoldSkillsUI = ({ skillsData }: Props) => {
-  // Random vị trí/size từng planet trong từng vùng
+  // Tính toán vị trí và kích thước từng icon theo hàng/cột
   const [randoms, setRandoms] = useState<
     { left: number; top: number; size: number }[][]
   >([]);
-  useEffect(() => {
-    setRandoms(
-      CATEGORY_LIST.map((cat) => {
-        const arr = skillsData[cat] ?? [];
-        return arr.map((_, idx) => ({
-          left: getRandom(
-            7 + idx * (86 / Math.max(arr.length, 1)),
-            18 + idx * (82 / Math.max(arr.length, 1))
-          ),
-          top: getRandom(18, 65),
-          size: getRandom(PLANET_MIN_SIZE, PLANET_MAX_SIZE),
-        }));
-      })
-    );
-  }, [skillsData]);
+  const [catRows, setCatRows] = useState<number[]>([]);
 
-  // Starfield
-  const [stars, setStars] = useState<any[]>([]);
   useEffect(() => {
-    setStars(
-      Array.from({ length: 64 }).map(() => ({
-        left: Math.random() * 98,
-        top: Math.random() * 98,
-        width: 1.2 + Math.random() * 2.7,
-        height: 1.2 + Math.random() * 2.7,
-        opacity: Math.random() * 0.36 + 0.2,
-        delay: Math.random() * 2,
-      }))
-    );
-  }, []);
+    const allRandoms: { left: number; top: number; size: number }[][] = [];
+    const rowsArr: number[] = [];
+    CATEGORY_LIST.forEach((cat) => {
+      const arr = skillsData[cat] ?? [];
+      const count = arr.length;
+      if (count === 0) {
+        allRandoms.push([]);
+        rowsArr.push(0);
+        return;
+      }
+      const rows = Math.ceil(count / ITEMS_PER_ROW);
+      rowsArr.push(rows);
+
+      const groupRandoms: { left: number; top: number; size: number }[] = [];
+      for (let idx = 0; idx < count; idx++) {
+        const row = Math.floor(idx / ITEMS_PER_ROW);
+        const col = idx % ITEMS_PER_ROW;
+        // Chia đều 80% chiều ngang, lề trái phải mỗi bên 10%
+        const left =
+          10 +
+          (80 * col) / Math.min(ITEMS_PER_ROW - 1, count - 1) +
+          getRandom(-2, 2);
+        // Mỗi hàng cách nhau 25%, bắt đầu từ 18%
+        const top = 18 + row * 25 + getRandom(-4, 4);
+        groupRandoms.push({
+          left,
+          top,
+          size: getRandom(PLANET_MIN_SIZE, PLANET_MAX_SIZE),
+        });
+      }
+      allRandoms.push(groupRandoms);
+    });
+    setRandoms(allRandoms);
+    setCatRows(rowsArr);
+  }, [skillsData]);
 
   // ===== RENDER =====
   return (
-    <section
-      className=" w-full  mx-auto px-2"
-      style={{ minHeight: CATEGORY_HEIGHT * CATEGORY_LIST.length + 70 }}
-    >
-      {/* Star background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {stars.map((star, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              left: `${star.left}%`,
-              top: `${star.top}%`,
-              width: `${star.width}px`,
-              height: `${star.height}px`,
-              opacity: star.opacity,
-              animation: 'twinkle 2.7s infinite',
-              animationDelay: `${star.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+    <section className="w-full mx-auto px-2" style={{ minHeight: '470px' }}>
       {/* Big title */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 select-none md:block hidden">
         <h1 className="text-[140px] md:text-[170px] font-black text-white/5 tracking-wider">
@@ -139,18 +127,33 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
         {CATEGORY_LIST.map((cat, catIdx) => {
           const group = skillsData[cat] ?? [];
           if (!group.length) return null;
+          // Tính minHeight động theo số hàng
+          const rows = catRows[catIdx] || 1;
+          const minHeight = rows * 80 + 150; // 80px/hàng, +150 cho padding
+
+          // Intersection Observer cho từng category section
+          const sectionId = `skills-section-${cat}`;
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const { ref, inView } = useInView({
+            threshold: 0.16,
+            triggerOnce: false, // Animate mỗi lần vào/ra viewport
+          });
+
           return (
             <div
+              ref={ref}
               key={cat}
-              className={`relative w-full mx-auto min-h-[300px] mb-0  ${CATEGORY_BG[cat]} py-8 `}
+              id={sectionId}
+              className={`relative w-full mx-auto mb-0 ${CATEGORY_BG[cat]} py-8`}
+              style={{ minHeight }}
             >
-              <div className=" text-center text-base md:text-lg font-bold tracking-[0.2em] text-black  dark:text-violet-200 uppercase drop-shadow-lg select-none z-10">
+              <div className="text-center text-base md:text-lg font-bold tracking-[0.2em] text-black dark:text-violet-200 uppercase drop-shadow-lg select-none z-10">
                 {CATEGORY_LABELS[cat]}
               </div>
               <div
-                className={`relative w-full mx-auto min-h-[${CATEGORY_HEIGHT}px] mb-0 rounded-2xl py-2 transition-all `}
+                className={`relative w-full mx-auto mb-0 rounded-2xl py-2 transition-all`}
                 style={{
-                  height: CATEGORY_HEIGHT,
+                  height: minHeight - 60,
                 }}
               >
                 {/* Planets */}
@@ -169,23 +172,25 @@ const BoldSkillsUI = ({ skillsData }: Props) => {
                         top: `${r.top}%`,
                         width: `${r.size}px`,
                         height: `${r.size}px`,
-                        overflow: 'visible', // hoặc hidden nếu muốn
+                        overflow: 'visible',
                       }}
-                      animate={getRandomAnim()}
+                      animate={inView ? getRandomAnim() : { x: 0, y: 0 }}
                     >
                       <div
                         className={`
-                        rounded-full dark:bg-white/10 shadow-black shadow-lg transition-all duration-300 group-hover:scale-150 border border-white/10 relative hover:shadow-2xl
-                        opacity-85 p-2
+                          rounded-full dark:bg-white/10
+                          border border-white/10 relative
+                          transition-all duration-300
+                          group-hover:shadow-lg group-hover:scale-110
+                          opacity-85 p-2
                         `}
                         style={{
                           opacity: 0.89,
                         }}
                       >
-                        {/* Glow ngoài cùng */}
-                        <div className="absolute -inset-3 rounded-full pointer-events-none z-0 opacity-[0.08] group-hover:opacity-20 transition-all bg-cyan-100 blur-md" />
+                        {/* Glow chỉ khi hover */}
+                        <div className="absolute -inset-3 rounded-full pointer-events-none z-0 opacity-0 group-hover:opacity-20 transition-all bg-cyan-100 blur-sm" />
                         {/* Icon */}
-
                         <div className="z-10 flex items-center justify-center ">
                           {skill.icon?.startsWith('http') ? (
                             <Image

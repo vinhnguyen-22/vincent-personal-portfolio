@@ -2,6 +2,7 @@ import { DisableDraftButton } from '@/components/disable-draft-button';
 import Navbar from '@/components/navbar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import VideoBackground from '@/components/video-background';
 import { cn, portableTextToPlainText } from '@/lib/utils';
 import { SanityLive } from '@/sanity/lib/live';
 import { getAuthorData } from '@/sanity/lib/queries';
@@ -71,20 +72,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { isEnabled } = await draftMode();
-
+  const [author] = await Promise.all([getAuthorData()]);
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-sans antialiased max-w-5xl mx-auto py-12 sm:py-24 px-6',
+          'min-h-screen bg-background font-sans  py-12 sm:py-24 px-6',
           fontSans.variable
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark">
           <TooltipProvider delayDuration={0}>
+            <VideoBackground />
             {children}
-            {/* @ts-expect-error Server Component */}
-            <Navbar />
+            <Navbar author={author} />
           </TooltipProvider>
         </ThemeProvider>
         {isEnabled && (

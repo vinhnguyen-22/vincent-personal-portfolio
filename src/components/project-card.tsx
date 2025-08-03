@@ -8,10 +8,10 @@ import {
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { PortableText } from '@portabletext/react';
+import { BookText, Github, Globe, Play } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { TypedObject } from 'sanity';
-import { Github, Globe, BookText, Play } from 'lucide-react';
 
 const linkTypeMap: Record<
   string,
@@ -92,33 +92,27 @@ export function ProjectCard({
         className
       )}
     >
-      <Link
-        href={href || '#'}
-        className={cn('block cursor-pointer relative aspect-[5/3]')}
-        tabIndex={-1}
-      >
-        {/* Video ưu tiên, fallback image */}
-        {video ? (
-          <video
-            src={video}
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster={image}
-            className="h-40 w-full object-cover object-top transition duration-300 group-hover:brightness-75"
-          />
-        ) : (
-          <Image
-            src={image || ''}
-            alt={title || 'Project cover'}
-            width={500}
-            height={300}
-            className="h-40 w-full object-cover object-top transition duration-300 group-hover:brightness-75"
-          />
-        )}
-        <span className="sr-only">{title}</span>
-      </Link>
+      {/* Video ưu tiên, fallback image */}
+      {video ? (
+        <video
+          src={video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster={image}
+          className="h-40 w-full object-cover object-top transition duration-300 group-hover:brightness-75"
+        />
+      ) : (
+        <Image
+          src={image || ''}
+          alt={title || 'Project cover'}
+          width={500}
+          height={300}
+          className="h-40 w-full object-cover object-top transition duration-300 group-hover:brightness-75"
+        />
+      )}
+      <span className="sr-only">{title}</span>
       <CardHeader className="px-3 pt-2 pb-0">
         <CardTitle className="mt-1 text-base font-bold leading-snug tracking-tight line-clamp-2">
           {title}
@@ -151,28 +145,29 @@ export function ProjectCard({
         )}
       </CardContent>
       <CardFooter className="px-3 pb-3 pt-0 mt-auto flex flex-row flex-wrap gap-2">
-        {links &&links.map((l, idx) => {
-          if (!l?.url) return null;
-          const typeKey = l.type ? l.type.toLowerCase() : 'default';
-          const mapItem = linkTypeMap[typeKey] || linkTypeMap.default;
-          return (
-            <Link
-              href={l.url}
-              key={idx}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-              tabIndex={0}
-            >
-              <Badge
-                className={`flex gap-1 px-2 py-1 text-[11px] font-medium border-0 shadow-sm items-center transition-colors duration-150 ${mapItem.badgeClass}`}
+        {links &&
+          links.map((l, idx) => {
+            if (!l?.url) return null;
+            const typeKey = l.type ? l.type.toLowerCase() : 'default';
+            const mapItem = linkTypeMap[typeKey] || linkTypeMap.default;
+            return (
+              <Link
+                href={l.url}
+                key={idx}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                tabIndex={0}
               >
-                {mapItem.icon}
-                {l.title ?? mapItem.fallback}
-              </Badge>
-            </Link>
-          );
-        })}
+                <Badge
+                  className={`flex gap-1 px-2 py-1 text-[11px] font-medium border-0 shadow-sm items-center transition-colors duration-150 ${mapItem.badgeClass}`}
+                >
+                  {mapItem.icon}
+                  {l.title ?? mapItem.fallback}
+                </Badge>
+              </Link>
+            );
+          })}
       </CardFooter>
     </Card>
   );

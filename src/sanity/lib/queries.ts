@@ -77,7 +77,7 @@ export const getWorkExperience = async () => {
 
 export const getEducation = async () => {
   const EDUCATION_QUERY = defineQuery(`
-    *[_type == "education"] | order(startDate desc) {
+    *[_type == "education"] | order(endDate desc) {
       _id,
       school,
       degree,
@@ -101,19 +101,25 @@ export const getEducation = async () => {
 
 export const getProjects = async () => {
   const PROJECTS_QUERY = defineQuery(`
-    *[_type == "project"] | order(startDate desc) {
+ *[_type == "project"] | order(endDate desc) {
       _id,
       title,
       description,
       startDate,
       endDate,
+      role,
+      responsibilities,
+      outcome,
+      teamSize,
+      projectType,
+      status,
+      tags,
       technologies,
       image {
-        asset-> {
+        asset->{
           url
         }
       },
-      video,
       links[] {
         title,
         url,
