@@ -7,17 +7,16 @@ export default function VideoBackground() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Không render video nếu theme là 'light'
-  if (resolvedTheme !== 'dark') {
-    return null;
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // Always call hooks before any return!
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; // Đợi client mới render video
+  // Conditional returns go after hooks
+  if (resolvedTheme !== 'dark') {
+    return null;
+  }
+  if (!mounted) return null; // Wait for client mount
 
   return (
     <div className="fixed inset-0 w-full h-full -z-10">

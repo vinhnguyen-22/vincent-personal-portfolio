@@ -198,7 +198,7 @@ export function ProjectDetailDialog({ project }: Props) {
         <DialogContent
           autoFocus={false}
           className={cn(
-            'max-w-4xl w-[95vw] h-[85vh] p-0 rounded-2xl overflow-hidden border shadow-xl',
+            'w-full max-w-[98vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-[85vh] p-0 rounded-2xl overflow-hidden border shadow-xl',
             'bg-white dark:bg-black flex flex-col'
           )}
         >

@@ -1,6 +1,5 @@
 import BoldSkillsUI, { SkillsData } from '@/components/block-skills';
 import BlurFade from '@/components/magicui/blur-fade';
-import BlurFadeText from '@/components/magicui/blur-fade-text';
 import { ProjectDetailDialog } from '@/components/project-detail';
 import { ResumeCard } from '@/components/resume-card';
 import ResumeTimeline from '@/components/resume-timeline';
@@ -14,6 +13,7 @@ import {
   getWorkExperience,
 } from '@/sanity/lib/queries';
 import { PortableText } from '@portabletext/react';
+import Spline from '@splinetool/react-spline';
 import { DownloadIcon } from 'lucide-react';
 import Link from 'next/link';
 const BLUR_FADE_DELAY = 0.04;
@@ -47,77 +47,81 @@ export default async function Page() {
     return acc;
   }, {} as SkillsData);
   return (
-    <main className="min-h-[100dvh] space-y-10 relative w-full h-full antialiased max-w-5xl mx-auto">
-      <section id="hero">
-        <div className="mx-auto w-full space-y-8">
-          <div className="gap-2 flex justify-between">
-            <div className="flex-col flex flex-1 space-y-1.5">
-              <BlurFadeText
-                delay={BLUR_FADE_DELAY}
-                className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
-                yOffset={8}
-                text={`Hi, I'm ${author.name?.split(' ')[0] ?? ''}`}
-                emoji={{
-                  value: '👋🏼',
-                  className: 'text-[55px] ml-2.5 pb-2 -mt-1',
-                }}
-              />
+    <main className="min-h-[100dvh] space-y-10  relative w-full h-full antialiased max-w-5xl mx-auto">
+      <section
+        id="hero"
+        className="relative w-full min-h-[500px] overflow-hidden  py-10 "
+      >
+        {/* Spline background layer */}
+        <div className="absolute md:top-[-10%] inset-0  md:-right-[55%] min-w-[300px] min-h-[200px] ">
+          <Spline
+            className="object-cover"
+            scene="https://prod.spline.design/eu8ydTm5qMXIyxbH/scene.splinecode"
+          />
+        </div>
 
-              <BlurFade delay={BLUR_FADE_DELAY}>
-                <div className="relative max-w-[600px] ">
-                  <BlurFadeText
-                    className="md:text-xl"
-                    delay={BLUR_FADE_DELAY}
-                    text={portableTextToPlainText(author.description!)}
-                  />
-                  <div className="flex items-center justify-center"></div>
-                </div>
-              </BlurFade>
+        {/* Main content */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-10">
+          {/* Left: Info */}
+          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-6">
+            {/* Avatar + Resume */}
+            <div className="flex flex-col  items-center md:items-start gap-5 pt-4">
+              <Avatar className="size-28 md:size-36 border-2 border-gray-400 shadow-lg">
+                <AvatarImage
+                  alt={author.name ?? ''}
+                  src={author.avatar?.asset?.url ?? ''}
+                />
+                <AvatarFallback>{author.initials}</AvatarFallback>
+              </Avatar>
             </div>
-
-            <BlurFade delay={BLUR_FADE_DELAY}>
-              <div className="flex items-center gap-3 flex-col">
-                <Avatar className="size-36 border relative">
-                  <AvatarImage
-                    alt={author.name ?? ''}
-                    src={author.avatar?.asset?.url ?? ''}
-                  />
-                  <AvatarFallback>{author.initials}</AvatarFallback>
-                </Avatar>
-                <a
-                  href={author.resume?.asset?.url ?? '#'}
-                  download
-                  target="_blank"
-                  className="
-    inline-flex items-center gap-2 px-3 py-1.5 rounded-lg
-    border border-gray-300 dark:border-gray-700
-    bg-white dark:bg-black
-    text-gray-800 dark:text-gray-100
-    font-normal text-sm shadow-sm
-    hover:bg-gray-100 dark:hover:bg-gray-800
-    hover:border-gray-400 dark:hover:border-gray-500
-    transition-colors duration-150
-    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
-  "
-                >
-                  Resume
-                  <DownloadIcon className="size-4 ml-0.5" />
-                </a>
-              </div>
-            </BlurFade>
+            <div>
+              <span className="text-4xl md:text-6xl font-bold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
+                Hi, I{"'"}m {author.name?.split(' ')[0] ?? ''}
+                <span className="text-[48px] md:text-[55px] pb-2 -mt-1">
+                  👋🏼
+                </span>
+              </span>
+            </div>
+            <div>
+              <p className="text-lg md:text-2xl text-gray-200 font-medium max-w-xl">
+                {portableTextToPlainText(author.description!)}
+              </p>
+            </div>
+            <a
+              href={author.resume?.asset?.url ?? '#'}
+              download
+              target="_blank"
+              className="
+            mt-3 sm:mt-0
+            inline-flex items-center gap-2 px-5 py-2 rounded-lg
+            border border-gray-300 dark:border-gray-700
+            bg-white dark:bg-black
+            text-gray-900 dark:text-gray-100
+            font-semibold text-base shadow hover:bg-gray-100 dark:hover:bg-gray-800
+            transition-colors duration-150
+            focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
+          "
+            >
+              Resume
+              <DownloadIcon className="size-5 ml-1" />
+            </a>
           </div>
+          {/* Optional right space for balance */}
+          <div className="flex-1 hidden md:block" />
         </div>
       </section>
 
       <section id="about">
-        <BlurFade delay={BLUR_FADE_DELAY * 3}>
-          <h2 className="text-xl font-bold">About</h2>
-        </BlurFade>
-        <BlurFade delay={BLUR_FADE_DELAY * 4}>
-          <div className="prose max-w-full text-pretty text-justify font-sans text-sm text-muted-foreground dark:prose-invert">
-            <PortableText value={author.summary ?? []} />
-          </div>
-        </BlurFade>
+        <div className="">
+          <BlurFade delay={BLUR_FADE_DELAY * 3}>
+            <h2 className="text-xl font-bold">About</h2>
+          </BlurFade>
+          <BlurFade delay={BLUR_FADE_DELAY * 4}>
+            <div className="prose max-w-full text-pretty text-justify font-sans text-sm text-muted-foreground dark:prose-invert">
+              <PortableText value={author.summary ?? []} />
+            </div>
+          </BlurFade>
+        </div>
       </section>
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-3">
@@ -147,7 +151,7 @@ export default async function Page() {
         </BlurFade>
         <ResumeTimeline works={work} />
       </section>
-      <section id="skills">
+      <section id="skills" className="max-w-full relative">
         <div className="flex min-h-0 flex-col gap-y-8">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
             <h2 className="text-2xl font-bold mb-4 tracking-tight">Skills</h2>

@@ -1,6 +1,5 @@
 'use client';
 import { Dock, DockIcon } from '@/components/magicui/dock';
-import { ModeToggle } from '@/components/mode-toggle';
 import { buttonVariants } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import {
+  CloudDownload,
   DraftingCompassIcon,
   GithubIcon,
   HomeIcon,
@@ -78,6 +78,11 @@ export default function Navbar({ author }: any) {
             icon: LinkedinIcon,
             url: author?.social?.linkedin || '#',
           },
+          {
+            name: 'Resume/CV',
+            icon: CloudDownload,
+            url: author.resume?.asset?.url ?? '#',
+          },
         ].map((social) => (
           <DockIcon key={social.name}>
             <Tooltip>
@@ -99,7 +104,7 @@ export default function Navbar({ author }: any) {
             </Tooltip>
           </DockIcon>
         ))}
-        <Separator orientation="vertical" className="h-full py-2" />
+        {/* <Separator orientation="vertical" className="h-full py-2" />
         <DockIcon>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -109,7 +114,7 @@ export default function Navbar({ author }: any) {
               <p>Theme</p>
             </TooltipContent>
           </Tooltip>
-        </DockIcon>
+        </DockIcon> */}
       </Dock>
     </div>
   );
