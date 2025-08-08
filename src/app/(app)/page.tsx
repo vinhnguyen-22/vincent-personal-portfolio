@@ -50,48 +50,41 @@ export default async function Page() {
     <main className="min-h-[100dvh] space-y-10  relative w-full h-full antialiased max-w-5xl mx-auto">
       <section
         id="hero"
-        className="relative w-full min-h-[500px] overflow-hidden  py-10 "
+        className="relative w-full  overflow-hidden py-10 md:py-20"
       >
-        {/* Spline background layer */}
-        <div className="absolute md:top-[-10%] inset-0  md:-right-[55%] min-w-[300px] min-h-[200px] ">
-          <Spline
-            className="object-cover"
-            scene="https://prod.spline.design/eu8ydTm5qMXIyxbH/scene.splinecode"
-          />
-        </div>
-
-        {/* Main content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-10">
-          {/* Left: Info */}
-          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-6">
-            {/* Avatar + Resume */}
-            <div className="flex flex-col  items-center md:items-start gap-5 pt-4">
-              <Avatar className="size-28 md:size-36 border-2 border-gray-400 shadow-lg">
-                <AvatarImage
-                  alt={author.name ?? ''}
-                  src={author.avatar?.asset?.url ?? ''}
-                />
-                <AvatarFallback>{author.initials}</AvatarFallback>
-              </Avatar>
-            </div>
-            <div>
-              <span className="text-4xl md:text-6xl font-bold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
-                Hi, I{"'"}m {author.name?.split(' ')[0] ?? ''}
-                <span className="text-[48px] md:text-[55px] pb-2 -mt-1">
-                  👋🏼
+        <div className="flex flex-row justify-between text-center">
+          {/* Main content */}
+          <div className="relative z-10 w-full mx-auto flex flex-col md:flex-row items-center ">
+            {/* Left: Info */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-6">
+              {/* Avatar + Resume */}
+              <div className="flex flex-col  items-center md:items-start gap-5 pt-4">
+                <Avatar className="size-28 md:size-36 border-2 border-gray-400 shadow-lg">
+                  <AvatarImage
+                    alt={author.name ?? ''}
+                    src={author.avatar?.asset?.url ?? ''}
+                  />
+                  <AvatarFallback>{author.initials}</AvatarFallback>
+                </Avatar>
+              </div>
+              <div>
+                <span className="text-4xl md:text-6xl font-bold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
+                  Hi, I{"'"}m {author.name?.split(' ')[0] ?? ''}
+                  <span className="text-[48px] md:text-[55px] pb-2 -mt-1">
+                    👋🏼
+                  </span>
                 </span>
-              </span>
-            </div>
-            <div>
-              <p className="text-lg md:text-2xl text-gray-200 font-medium max-w-xl">
-                {portableTextToPlainText(author.description!)}
-              </p>
-            </div>
-            <a
-              href={author.resume?.asset?.url ?? '#'}
-              download
-              target="_blank"
-              className="
+              </div>
+              <div>
+                <p className="text-lg md:text-2xl text-gray-200 font-medium max-w-xl">
+                  {portableTextToPlainText(author.description!)}
+                </p>
+              </div>
+              <a
+                href={author.resume?.asset?.url ?? '#'}
+                download
+                target="_blank"
+                className="
             mt-3 sm:mt-0
             inline-flex items-center gap-2 px-5 py-2 rounded-lg
             border border-gray-300 dark:border-gray-700
@@ -101,13 +94,20 @@ export default async function Page() {
             transition-colors duration-150
             focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
           "
-            >
-              Resume
-              <DownloadIcon className="size-5 ml-1" />
-            </a>
+              >
+                Resume
+                <DownloadIcon className="size-5 ml-1" />
+              </a>
+            </div>
+            {/* Optional right space for balance */}
           </div>
-          {/* Optional right space for balance */}
-          <div className="flex-1 hidden md:block" />
+          {/* Spline background layer */}
+          <div className="absolute lg:relative md:top-[-10%] inset-0  md:-right-[55%] min-w-[300px] md:min-w-[500px] min-h-[200px] overflow-y-hidden  ">
+            <Spline
+              className="relative md:absolute  object-cover"
+              scene="./ai_data_model_interaction.spline"
+            />
+          </div>
         </div>
       </section>
 
